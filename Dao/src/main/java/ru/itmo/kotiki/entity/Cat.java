@@ -1,6 +1,7 @@
 package ru.itmo.kotiki.entity;
 
 import jakarta.persistence.*;
+import ru.itmo.kotiki.enums.Color;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,18 +14,16 @@ public class Cat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     @Column(name = "birth_date")
-    Date bithDate;
+    Date birthDate;
     @Column
     String name;
     @Column
     String breed;
-    @ManyToOne(fetch = FetchType.LAZY)
-            @JoinColumn(name = "color_id")
+    @Enumerated(EnumType.STRING)
     Color color;
-    @ManyToOne
-            @JoinColumn(name = "owner_id")
+    @ManyToOne (cascade = CascadeType.MERGE)
     Owner owner;
-    @ManyToMany
+    @ManyToMany (cascade = CascadeType.MERGE)
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "first_cat_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "second_cat_id", referencedColumnName = "id"))
@@ -42,12 +41,12 @@ public class Cat {
         this.id = id;
     }
 
-    public Date getBithDate() {
-        return bithDate;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBithDate(Date bithDate) {
-        this.bithDate = bithDate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getName() {
@@ -88,5 +87,17 @@ public class Cat {
 
     public void setFriends(ArrayList<Cat> friends) {
         this.friends = friends;
+    }
+
+    @Override
+    public String toString() {
+        return "Cat{" +
+                "id=" + id +
+                ", birthDate=" + birthDate +
+                ", name='" + name + '\'' +
+                ", breed='" + breed + '\'' +
+                ", color=" + color +
+                ", owner=" + owner.getName() +
+                '}';
     }
 }
